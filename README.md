@@ -5,6 +5,12 @@ This project implements a real-time, event-driven data pipeline for an e-commerc
 
 ---
 
+## Architecture Overview
+
+![Architecture](./images/Project-5.png)
+
+---
+
 ## 1. Data Format and Sample Schema
 ### Input Format
 Files are uploaded to the following S3 paths:
