@@ -1,0 +1,93 @@
+{
+  "Comment": "ECS Orchestration for E-Commerce ETL",
+  "StartAt": "Run Task 1 - Validation",
+  "States": {
+    "Run Task 1 - Validation": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "LaunchType": "FARGATE",
+        "Cluster": "e-commerce-cluster",
+        "TaskDefinition": "etl-task-1:10",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": [
+              "subnet-08cacdf1f7356f9d6"
+            ],
+            "SecurityGroups": [
+              "sg-0c6c9ab999460dc24"
+            ],
+            "AssignPublicIp": "ENABLED"
+          }
+        },
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Name": "etl-container"
+            }
+          ]
+        }
+      },
+      "TimeoutSeconds": 300,
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "Task 1 Failed"
+        }
+      ],
+      "Next": "Run Task 2 - Transformation"
+    },
+    "Run Task 2 - Transformation": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "LaunchType": "FARGATE",
+        "Cluster": "e-commerce-cluster",
+        "TaskDefinition": "etl-task-2:8",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": [
+              "subnet-08cacdf1f7356f9d6"
+            ],
+            "SecurityGroups": [
+              "sg-0c6c9ab999460dc24"
+            ],
+            "AssignPublicIp": "ENABLED"
+          }
+        },
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Name": "etl-container"
+            }
+          ]
+        }
+      },
+      "TimeoutSeconds": 300,
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "Task 2 Failed"
+        }
+      ],
+      "Next": "Success"
+    },
+    "Task 1 Failed": {
+      "Type": "Fail",
+      "Error": "ValidationError",
+      "Cause": "Validation ECS task failed."
+    },
+    "Task 2 Failed": {
+      "Type": "Fail",
+      "Error": "TransformationError",
+      "Cause": "Transformation ECS task failed."
+    },
+    "Success": {
+      "Type": "Succeed"
+    }
+  }
+}
