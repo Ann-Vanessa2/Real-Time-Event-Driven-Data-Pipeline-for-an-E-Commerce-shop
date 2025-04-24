@@ -7,7 +7,7 @@ This project implements a real-time, event-driven data pipeline for an e-commerc
 
 ## Architecture Overview
 
-![Architecture](./images/Project-5.png)
+![Architecture](./images/Project_5.png)
 
 ---
 
